@@ -141,7 +141,9 @@ def EqualSpaceFrames_ver2(model_input, num_frames, num_samples):
   """
   batch_size = tf.shape(model_input)[0]
   frame_index = tf.cast(tf.tile(tf.expand_dims(tf.range(num_samples), 0), [batch_size, 1]), tf.float32) * 3.
-  index = tf.cast(frame_index, tf.int32)
+  frame_index = tf.cast(frame_index, tf.int32)
+  batch_index = tf.tile(tf.expand_dims(tf.range(batch_size), 1), [1, num_samples])
+  index = tf.stack([batch_index, frame_index], 2)
   return tf.gather_nd(model_input, index)
 
 
