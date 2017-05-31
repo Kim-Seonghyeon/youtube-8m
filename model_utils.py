@@ -156,7 +156,7 @@ def EqualSpaceMean(model_input, num_frames, num_samples):
   Returns:
     `model_input`: A tensor of size batch_size x num_samples x feature_size
   """
-  return tf.reduce_max(tf.stack(tf.split(model_input, num_samples, 1), 1), 2)
+  return tf.reduce_mean(tf.stack(tf.split(model_input, num_samples, 1), 1), 2)
 
 
 def IdentityFrames(model_input, num_frames, num_samples):
