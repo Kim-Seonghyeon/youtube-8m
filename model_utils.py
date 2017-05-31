@@ -147,6 +147,17 @@ def EqualSpaceFrames_ver2(model_input, num_frames, num_samples):
   return tf.gather_nd(model_input, index)
 
 
+def EqualSpaceMean(model_input, num_frames, num_samples):
+  """Samples a random set of frames of size num_samples.
+  Args:
+    model_input: A tensor of size batch_size x max_frames x feature_size
+    num_frames: A tensor of size batch_size x 1
+    num_samples: A scalar
+  Returns:
+    `model_input`: A tensor of size batch_size x num_samples x feature_size
+  """
+  return tf.reduce_max(tf.stack(tf.split(model_input, num_samples, 1), 1), 2)
+
 
 def IdentityFrames(model_input, num_frames, num_samples):
   """Samples a random set of frames of size num_samples.
