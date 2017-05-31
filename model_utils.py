@@ -130,6 +130,21 @@ def EqualSpaceFrames(model_input, num_frames, num_samples):
   return tf.gather_nd(model_input, index)
 
 
+def EqualSpaceFrames_ver2(model_input, num_frames, num_samples):
+  """Samples a random set of frames of size num_samples.
+  Args:
+    model_input: A tensor of size batch_size x max_frames x feature_size
+    num_frames: A tensor of size batch_size x 1
+    num_samples: A scalar
+  Returns:
+    `model_input`: A tensor of size batch_size x num_samples x feature_size
+  """
+  batch_size = tf.shape(model_input)[0]
+  frame_index = tf.cast(tf.tile(tf.expand_dims(tf.range(num_samples), 0), [batch_size, 1]), tf.float32) * 2.
+  index = tf.cast(frame_index, tf.int32)
+  return tf.gather_nd(model_input, index)
+
+
 
 def IdentityFrames(model_input, num_frames, num_samples):
   """Samples a random set of frames of size num_samples.
