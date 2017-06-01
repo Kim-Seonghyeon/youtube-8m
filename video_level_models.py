@@ -61,14 +61,14 @@ class PartDnnModel(models.BaseModel):
       batch_size x num_classes.
     """
     num_mixtures = num_mixtures or FLAGS.moe_num_mixtures
-    hidden_size = hidden_size or FLAGS.hidden_size
 
     hid_1_activations=[]
     hid_2_activations=[]
     hid_3_activations=[]
     predictions=[]
-    num_output=[300,700,1000,1000,1716]
-    for i in range(len(num_output)):
+    init_predictions=[]
+    num_output=[0,716,1716,2716,3716,4716]
+    for i in range(len(num_output)-1):
       hid_1_activations.append(slim.fully_connected(
           model_input,
           hidden_size,
@@ -89,20 +89,20 @@ class PartDnnModel(models.BaseModel):
           biases_initializer=None,
           weights_regularizer=slim.l2_regularizer(l2_penalty)))
 
-
-      predictions.append(slim.fully_connected(
+      init_predictions.append(slim.fully_connected(
           hid_3_activations[i],
-          num_output[i],
+          vocab_size,
           activation_fn=tf.nn.sigmoid,
           biases_initializer=None,
           weights_regularizer=slim.l2_regularizer(l2_penalty)))
+      predictions.append(init_predictions[i][:,num_output[i]:num_output[i+1]])
 
 
-
+    init_probabilities = tf.stack(init_predictions,2)
     final_probabilities = tf.concat(predictions,1)
 
 
-    return {"predictions": final_probabilities} 
+    return {"predictions": final_probabilities,"init_predictions": init_probabilities}
 
 
 
