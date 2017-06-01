@@ -32,7 +32,7 @@ flags.DEFINE_integer(
 
 
 
-class DnnMoeModel(models.BaseModel):
+class PartDnnModel(models.BaseModel):
   """A softmax over a mixture of logistic models (with L2 regularization)."""
 
   def create_model(self,
@@ -65,9 +65,10 @@ class DnnMoeModel(models.BaseModel):
 
     hid_1_activations=[]
     hid_2_activations=[]
+    hid_3_activations=[]
     predictions=[]
-    gating_distribution=[]
-    for i in range(num_mixtures):
+    num_output=[1000,1000,1000,1000,716]
+    for i in range(len(num_output)):
       hid_1_activations.append(slim.fully_connected(
           model_input,
           hidden_size,
@@ -81,26 +82,24 @@ class DnnMoeModel(models.BaseModel):
           activation_fn=tf.nn.relu6,
           biases_initializer=None,
           weights_regularizer=slim.l2_regularizer(l2_penalty)))
+      hid_3_activations.append(slim.fully_connected(
+          hid_2_activations[i],
+          hidden_size,
+          activation_fn=tf.nn.relu6,
+          biases_initializer=None,
+          weights_regularizer=slim.l2_regularizer(l2_penalty)))
 
 
       predictions.append(slim.fully_connected(
-          hid_2_activations[i],
+          hid_3_activations[i],
           vocab_size,
           activation_fn=tf.nn.sigmoid,
           biases_initializer=None,
           weights_regularizer=slim.l2_regularizer(l2_penalty)))
-    gating_distribution= slim.fully_connected(
-        model_input,
-        vocab_size*(num_mixtures+1),
-        activation_fn=tf.nn.softmax,
-        weights_regularizer=slim.l2_regularizer(l2_penalty))
-    gating_distribution = tf.reshape(gating_distribution,[-1,vocab_size,num_mixtures+1])
-    gating_distribution = tf.nn.softmax(gating_distribution)
-    predictions = tf.stack(predictions,2)
 
 
 
-    final_probabilities = tf.reduce_sum(gating_distribution[:,:,:-1]*predictions, 2)
+    final_probabilities = tf.concat(predictions,1)
 
 
     return {"predictions": final_probabilities} 
