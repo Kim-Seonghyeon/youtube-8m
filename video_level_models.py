@@ -67,7 +67,7 @@ class PartDnnModel(models.BaseModel):
     hid_2_activations=[]
     hid_3_activations=[]
     predictions=[]
-    num_output=[1000,1000,1000,1000,716]
+    num_output=[300,700,1000,1000,1716]
     for i in range(len(num_output)):
       hid_1_activations.append(slim.fully_connected(
           model_input,
@@ -92,7 +92,7 @@ class PartDnnModel(models.BaseModel):
 
       predictions.append(slim.fully_connected(
           hid_3_activations[i],
-          vocab_size,
+          num_output[i],
           activation_fn=tf.nn.sigmoid,
           biases_initializer=None,
           weights_regularizer=slim.l2_regularizer(l2_penalty)))
