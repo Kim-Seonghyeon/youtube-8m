@@ -67,7 +67,7 @@ class PartDnnModel(models.BaseModel):
     hid_3_activations=[]
     predictions=[]
     init_predictions=[]
-    num_output=[0,716,1716,2716,3716,4716]
+    num_output=[0,1500,3000,4716]
     for i in range(len(num_output)-1):
       hid_1_activations.append(slim.fully_connected(
           model_input,
