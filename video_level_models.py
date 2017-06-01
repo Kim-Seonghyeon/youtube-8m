@@ -30,6 +30,79 @@ flags.DEFINE_integer(
     "hidden_size", 4096,
     "The number of mixtures (excluding the dummy 'expert') used for MoeModel.")
 
+
+
+class DnnMoeModel(models.BaseModel):
+  """A softmax over a mixture of logistic models (with L2 regularization)."""
+
+  def create_model(self,
+                   model_input,
+                   vocab_size,
+                   num_mixtures=None,
+                   l2_penalty=1e-8,
+                   hidden_size=1024,
+                   **unused_params):
+    """Creates a Mixture of (Logistic) Experts model.
+
+     The model consists of a per-class softmax distribution over a
+     configurable number of logistic classifiers. One of the classifiers in the
+     mixture is not trained, and always predicts 0.
+
+    Args:
+      model_input: 'batch_size' x 'num_features' matrix of input features.
+      vocab_size: The number of classes in the dataset.
+      num_mixtures: The number of mixtures (excluding a dummy 'expert' that
+        always predicts the non-existence of an entity).
+      l2_penalty: How much to penalize the squared magnitudes of parameter
+        values.
+    Returns:
+      A dictionary with a tensor containing the probability predictions of the
+      model in the 'predictions' key. The dimensions of the tensor are
+      batch_size x num_classes.
+    """
+    num_mixtures = num_mixtures or FLAGS.moe_num_mixtures
+    hidden_size = hidden_size or FLAGS.hidden_size
+
+    hid_1_activations=[]
+    hid_2_activations=[]
+    predictions=[]
+    gating_distribution=[]
+    for i in range(num_mixtures):
+      hid_1_activations.append(slim.fully_connected(
+          model_input,
+          hidden_size,
+          activation_fn=tf.nn.relu6,
+          biases_initializer=None))
+
+      hid_2_activations.append(slim.fully_connected(
+          hid_1_activations[i],
+          hidden_size,
+          activation_fn=tf.nn.relu6,
+          biases_initializer=None))
+
+      predictions.append(slim.fully_connected(
+          hid_2_activations[i],
+          vocab_size,
+          activation_fn=tf.nn.sigmoid,
+          biases_initializer=None))
+    gating_distribution= slim.fully_connected(
+        model_input,
+        vocab_size*(num_mixtures+1),
+        activation_fn=tf.nn.softmax)
+    gating_distribution = tf.reshape(gating_distribution,[-1,vocab_size,num_mixtures+1])
+    gating_distribution = tf.nn.softmax(gating_distribution,2)
+    predictions = tf.stack(predictions,2)
+
+
+
+    final_probabilities = tf.reduce_sum(gating_distribution[:,:,:-1]*predictions, 2)
+
+
+    return {"predictions": final_probabilities} 
+
+
+
+
 class DnnModel(models.BaseModel):
   """Logistic model with L2 regularization."""
 
