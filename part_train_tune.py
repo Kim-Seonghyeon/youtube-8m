@@ -419,7 +419,7 @@ class Trainer(object):
         while (not sv.should_stop()) and (not self.max_steps_reached):
           batch_start_time = time.time()
           _, global_step_val, loss_val, predictions_val, labels_val = sess.run(
-              [init_train_op, global_step, loss, predictions, labels])
+              [train_op, global_step, loss, predictions, labels])
           seconds_per_batch = time.time() - batch_start_time
           examples_per_second = labels_val.shape[0] / seconds_per_batch
 
