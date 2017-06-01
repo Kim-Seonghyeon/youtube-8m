@@ -147,6 +147,66 @@ class DnnModel(models.BaseModel):
 
     return {"predictions": predictions}
 
+
+
+
+
+class DnnModel2(models.BaseModel):
+  """Logistic model with L2 regularization."""
+
+  def create_model(self,
+                   model_input,
+                   vocab_size,
+                   l2_penalty=1e-8,
+                   hidden_size=4096,
+                   **unused_params):
+
+        
+    hidden_size = hidden_size or FLAGS.hidden_size
+
+    hid_1_activations = slim.fully_connected(
+        model_input,
+        hidden_size,
+        activation_fn=tf.nn.relu6,
+        biases_initializer=None,
+        weights_regularizer=slim.l2_regularizer(l2_penalty))
+    hid_2_activations = slim.fully_connected(
+        hid_1_activations,
+        hidden_size,
+        activation_fn=tf.nn.relu6,
+        biases_initializer=None,
+        weights_regularizer=slim.l2_regularizer(l2_penalty))
+    hid_3_activations = slim.fully_connected(
+        hid_2_activations,
+        hidden_size,
+        activation_fn=tf.nn.relu6,
+        biases_initializer=None,
+        weights_regularizer=slim.l2_regularizer(l2_penalty))
+    hid_4_activations = slim.fully_connected(
+        hid_3_activations,
+        hidden_size,
+        activation_fn=tf.nn.relu6,
+        biases_initializer=None,
+        weights_regularizer=slim.l2_regularizer(l2_penalty))
+    hid_5_activations = slim.fully_connected(
+        hid_4_activations,
+        hidden_size,
+        activation_fn=tf.nn.relu6,
+        biases_initializer=None,
+        weights_regularizer=slim.l2_regularizer(l2_penalty))
+    predictions = slim.fully_connected(
+        hid_5_activations,
+        vocab_size,
+        activation_fn=tf.nn.sigmoid,
+        biases_initializer=None,
+        weights_regularizer=slim.l2_regularizer(l2_penalty))
+
+    return {"predictions": predictions}
+
+
+
+
+
 class LogisticModel(models.BaseModel):
   """Logistic model with L2 regularization."""
 
