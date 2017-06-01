@@ -65,6 +65,7 @@ class DnnMoeModel(models.BaseModel):
 
     hid_1_activations=[]
     hid_2_activations=[]
+    hid_3_activations=[]
     predictions=[]
     gating_distribution=[]
     for i in range(num_mixtures):
@@ -80,8 +81,14 @@ class DnnMoeModel(models.BaseModel):
           activation_fn=tf.nn.relu6,
           biases_initializer=None))
 
-      predictions.append(slim.fully_connected(
+      hid_3_activations.append(slim.fully_connected(
           hid_2_activations[i],
+          hidden_size,
+          activation_fn=tf.nn.relu6,
+          biases_initializer=None))
+
+      predictions.append(slim.fully_connected(
+          hid_3_activations[i],
           vocab_size,
           activation_fn=tf.nn.sigmoid,
           biases_initializer=None))
