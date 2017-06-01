@@ -73,31 +73,36 @@ class DnnMoeModel(models.BaseModel):
           model_input,
           hidden_size,
           activation_fn=tf.nn.relu6,
-          biases_initializer=None))
+          biases_initializer=None,
+          weights_regularizer=slim.l2_regularizer(l2_penalty)))
 
       hid_2_activations.append(slim.fully_connected(
           hid_1_activations[i],
           hidden_size,
           activation_fn=tf.nn.relu6,
-          biases_initializer=None))
+          biases_initializer=None,
+          weights_regularizer=slim.l2_regularizer(l2_penalty)))
 
       hid_3_activations.append(slim.fully_connected(
           hid_2_activations[i],
           hidden_size,
           activation_fn=tf.nn.relu6,
-          biases_initializer=None))
+          biases_initializer=None,
+          weights_regularizer=slim.l2_regularizer(l2_penalty)))
 
       predictions.append(slim.fully_connected(
           hid_3_activations[i],
           vocab_size,
           activation_fn=tf.nn.sigmoid,
-          biases_initializer=None))
+          biases_initializer=None,
+          weights_regularizer=slim.l2_regularizer(l2_penalty)))
     gating_distribution= slim.fully_connected(
         model_input,
         vocab_size*(num_mixtures+1),
-        activation_fn=tf.nn.softmax)
+        activation_fn=tf.nn.softmax,
+        weights_regularizer=slim.l2_regularizer(l2_penalty))
     gating_distribution = tf.reshape(gating_distribution,[-1,vocab_size,num_mixtures+1])
-    gating_distribution = tf.nn.softmax(gating_distribution,2)
+    gating_distribution = tf.nn.softmax(gating_distribution)
     predictions = tf.stack(predictions,2)
 
 
