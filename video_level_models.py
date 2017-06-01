@@ -40,7 +40,7 @@ class PartDnnModel(models.BaseModel):
                    vocab_size,
                    num_mixtures=None,
                    l2_penalty=1e-8,
-                   hidden_size=1024,
+                   hidden_size=4096,
                    **unused_params):
     """Creates a Mixture of (Logistic) Experts model.
 
