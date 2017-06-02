@@ -125,17 +125,20 @@ class DnnModel(models.BaseModel):
         hidden_size,
         activation_fn=tf.nn.relu6,
         biases_initializer=None,
+        weigths_initializer=tf.contrib.layers.xavier_initializer(),
         weights_regularizer=slim.l2_regularizer(l2_penalty))
     hid_2_activations = slim.fully_connected(
         hid_1_activations,
         hidden_size,
         activation_fn=tf.nn.relu6,
         biases_initializer=None,
+        weigths_initializer=tf.contrib.layers.xavier_initializer(),
         weights_regularizer=slim.l2_regularizer(l2_penalty))
     hid_3_activations = slim.fully_connected(
         hid_2_activations,
         hidden_size,
         activation_fn=tf.nn.relu6,
+        weigths_initializer=tf.contrib.layers.xavier_initializer(),
         biases_initializer=None,
         weights_regularizer=slim.l2_regularizer(l2_penalty))
     predictions = slim.fully_connected(
@@ -143,6 +146,7 @@ class DnnModel(models.BaseModel):
         vocab_size,
         activation_fn=tf.nn.sigmoid,
         biases_initializer=None,
+        weigths_initializer=tf.contrib.layers.xavier_initializer(),
         weights_regularizer=slim.l2_regularizer(l2_penalty))
 
     return {"predictions": predictions}
