@@ -247,7 +247,6 @@ class DbofModel2(models.BaseModel):
     else:
       model_input = utils.EqualSpaceFrames_ver2(model_input, num_frames,
                                                iterations)
-    logging.info(model_input)
     max_frames = model_input.get_shape().as_list()[1]
     feature_size = model_input.get_shape().as_list()[2]
     reshaped_input = tf.reshape(model_input, [-1, feature_size])
