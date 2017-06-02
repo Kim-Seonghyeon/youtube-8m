@@ -245,7 +245,7 @@ class DbofModel2(models.BaseModel):
       model_input = utils.SampleRandomFrames(model_input, num_frames,
                                              iterations)
     else:
-      model_input = utils.SampleRandomSequence(model_input, num_frames,
+      model_input = utils.EqualSpaceFrames_ver2(model_input, num_frames,
                                                iterations)
     logging.info(model_input)
     max_frames = model_input.get_shape().as_list()[1]
