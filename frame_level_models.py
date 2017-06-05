@@ -245,7 +245,7 @@ class DbofModel2(models.BaseModel):
       model_input = utils.SampleRandomFrames(model_input, num_frames,
                                              iterations)
     else:
-      model_input = utils.EqualSpaceFrames_ver2(model_input, num_frames,
+      model_input = utils.EqualSpaceMeans(model_input, num_frames,
                                                iterations)
     max_frames = model_input.get_shape().as_list()[1]
     feature_size = model_input.get_shape().as_list()[2]
