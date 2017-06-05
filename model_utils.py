@@ -121,7 +121,7 @@ def EqualSpaceFrames(model_input, num_frames, num_samples):
     `model_input`: A tensor of size batch_size x num_samples x feature_size
   """
   batch_size = tf.shape(model_input)[0]
-  frame_index = tf.cast(tf.tile(tf.expand_dims(tf.range(num_samples - 1), 0), [batch_size, 1]) / (num_samples - 1), tf.float32) * tf.cast(tf.tile(num_frames, [1, num_samples - 1]), tf.float32)
+  frame_index = tf.cast(tf.tile(tf.expand_dims(tf.range(num_samples - 1, dtype = tf.float32), 0), [batch_size, 1]) / (num_samples - 1), tf.float32) * tf.cast(tf.tile(num_frames, [1, num_samples - 1]), tf.float32)
   frame_index = tf.cast(frame_index, tf.int32)
   frame_index = tf.concat([frame_index, tf.cast(num_frames - 1,tf.int32)], 1)
   batch_index = tf.tile(
