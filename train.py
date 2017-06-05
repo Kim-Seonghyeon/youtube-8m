@@ -393,6 +393,7 @@ class Trainer(object):
         predictions = tf.get_collection("predictions")[0]
         labels = tf.get_collection("labels")[0]
         train_op = tf.get_collection("train_op")[0]
+        index = graph.get_tensor_by_name("tower/concat:0")
         init_op = tf.global_variables_initializer()
 
     sv = tf.train.Supervisor(
@@ -411,10 +412,11 @@ class Trainer(object):
         logging.info("%s: Entering training loop.", task_as_string(self.task))
         while (not sv.should_stop()) and (not self.max_steps_reached):
           batch_start_time = time.time()
-          _, global_step_val, loss_val, predictions_val, labels_val = sess.run(
-              [train_op, global_step, loss, predictions, labels])
+          _, global_step_val, loss_val, predictions_val, labels_val, index_val = sess.run(
+              [train_op, global_step, loss, predictions, labels, index])
           seconds_per_batch = time.time() - batch_start_time
           examples_per_second = labels_val.shape[0] / seconds_per_batch
+          logging.info(index_val)
 
           if self.max_steps and self.max_steps <= global_step_val:
             self.max_steps_reached = True
