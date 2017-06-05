@@ -393,7 +393,6 @@ class Trainer(object):
         predictions = tf.get_collection("predictions")[0]
         labels = tf.get_collection("labels")[0]
         train_op = tf.get_collection("train_op")[0]
-        index = graph.get_tensor_by_name("tower/concat:0")
         init_op = tf.global_variables_initializer()
 
     sv = tf.train.Supervisor(
