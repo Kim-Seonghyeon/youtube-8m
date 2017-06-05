@@ -110,25 +110,6 @@ def FramePooling(frames, method, **unused_params):
   else:
     raise ValueError("Unrecognized pooling method: %s" % method)
 
-    
-def EqualSpaceFrames(model_input, num_frames, num_samples):
-  """Samples a random set of frames of size num_samples.
-  Args:
-    model_input: A tensor of size batch_size x max_frames x feature_size
-    num_frames: A tensor of size batch_size x 1
-    num_samples: A scalar
-  Returns:
-    `model_input`: A tensor of size batch_size x num_samples x feature_size
-  """
-  batch_size = tf.shape(model_input)[0]
-  frame_index = tf.cast(tf.tile(tf.expand_dims(tf.range(num_samples - 1, dtype = tf.float32), 0), [batch_size, 1]) / (num_samples - 1), tf.float32) * tf.cast(tf.tile(num_frames, [1, num_samples - 1]), tf.float32)
-  frame_index = tf.cast(frame_index, tf.int32)
-  frame_index = tf.concat([frame_index, tf.cast(num_frames - 1,tf.int32)], 1)
-  batch_index = tf.tile(
-      tf.expand_dims(tf.range(batch_size), 1), [1, num_samples])
-  index = tf.stack([batch_index, frame_index], 2)
-  return tf.gather_nd(model_input, index)
-
 
 def EqualSpaceFrames_ver2(model_input, num_frames, num_samples):
   """Samples a random set of frames of size num_samples.
@@ -145,9 +126,8 @@ def EqualSpaceFrames_ver2(model_input, num_frames, num_samples):
   batch_index = tf.tile(tf.expand_dims(tf.range(batch_size), 1), [1, num_samples])
   index = tf.stack([batch_index, frame_index], 2)
   return tf.gather_nd(model_input, index)
-
-
-def EqualSpaceMean(model_input, num_frames, num_samples):
+   
+def EqualSpaceFrames(model_input, num_frames, num_samples):
   """Samples a random set of frames of size num_samples.
   Args:
     model_input: A tensor of size batch_size x max_frames x feature_size
@@ -156,7 +136,37 @@ def EqualSpaceMean(model_input, num_frames, num_samples):
   Returns:
     `model_input`: A tensor of size batch_size x num_samples x feature_size
   """
-  return tf.reduce_mean(tf.stack(tf.split(model_input, num_samples, 1), 1), 2)
+  batch_size = tf.shape(model_input)[0]
+  frame_index = tf.cast(tf.tile(tf.expand_dims(tf.range(num_samples - 1, dtype= tf.float32), 0), [batch_size, 1]) / (num_samples - 1), tf.float32) * tf.cast(tf.tile(num_frames, [1, num_samples - 1]), tf.float32)
+  frame_index = tf.cast(frame_index, tf.int32)
+  frame_index = tf.concat([frame_index, tf.cast(num_frames - 1,tf.int32)], 1)
+  batch_index = tf.tile(
+      tf.expand_dims(tf.range(batch_size), 1), [1, num_samples])
+  index = tf.stack([batch_index, frame_index], 2)
+  logging.info(frame_index)
+  return [tf.gather_nd(model_input, index),frame_index]
+
+
+def EqualSpaceMeans(model_input, num_frames, num_samples):
+  """Samples a random set of frames of size num_samples.
+  Args:
+    model_input: A tensor of size batch_size x max_frames x feature_size
+    num_frames: A tensor of size batch_size x 1
+    num_samples: A scalar
+  Returns:
+    `model_input`: A tensor of size batch_size x num_samples x feature_size
+  """
+  batch_size = tf.shape(model_input)[0]
+  frame_index = tf.cast(tf.tile(tf.expand_dims(tf.range(300 - 1, dtype= tf.float32), 0), [batch_size, 1]) / (300 - 1), tf.float32) * tf.cast(tf.tile(num_frames, [1, 300 - 1]), tf.float32)
+  frame_index = tf.cast(frame_index, tf.int32)
+  frame_index = tf.concat([frame_index, tf.cast(num_frames - 1,tf.int32)], 1)
+  batch_index = tf.tile(
+      tf.expand_dims(tf.range(batch_size), 1), [1, 300])
+  index = tf.stack([batch_index, frame_index], 2)
+  model_input = tf.gather_nd(model_input, index)
+
+  return tf.reduce_mean(tf.stack(tf.split(model_input,num_samples, 1), 1), 2)
+
 
 
 def IdentityFrames(model_input, num_frames, num_samples):
