@@ -162,7 +162,6 @@ def inference(reader, train_dir, data_pattern, out_file_location, batch_size, to
 
           now = time.time()
           num_examples_processed += len(video_batch_val)
-          num_classes = feature1_val.shape[1]
           logging.info("num examples processed: " + str(num_examples_processed) + " elapsed seconds: " + "{0:.2f}".format(now-start_time))
         logging.info(file_num)
         feature1_val_tot = np.concatenate(feature1_val_tot, axis=0)
