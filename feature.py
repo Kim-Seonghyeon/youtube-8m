@@ -138,7 +138,7 @@ def inference(reader, train_dir, data_pattern, out_file_location, batch_size, to
         feature1_val_tot = []
         feature2_val_tot = []
         labels_val_tot = []
-        for i in range(128):
+        for i in range(2):
           video_id_batch_val, video_batch_val,num_frames_batch_val, labels_val = sess.run([video_id_batch, video_batch, num_frames_batch, label_batch])
           feature1_1_val,feature1_2_val,feature1_3_val,feature1_4_val,feature1_5_val,feature1_6_val,feature1_7_val,feature1_8_val,feature2_1_val,feature2_2_val,feature2_3_val,feature2_4_val,feature2_5_val,feature2_6_val,feature2_7_val,feature2_8_val, = sess.run(feature1+feature2, feed_dict={input_tensor: video_batch_val, num_frames_tensor: num_frames_batch_val})
           feature1_val_tot.append(feature1_1_val)
