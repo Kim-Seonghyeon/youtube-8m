@@ -50,13 +50,13 @@ if __name__ == '__main__':
 
 
   # Other flags.
-  flags.DEFINE_integer("num_readers", 1,
+  flags.DEFINE_integer("num_readers", 8,
                        "How many threads to use for reading input files.")
   flags.DEFINE_integer("top_k", 20,
                        "How many predictions to output per video.")
 
 
-def get_input_data_tensors(reader, data_pattern, batch_size, num_readers=1):
+def get_input_data_tensors(reader, data_pattern, batch_size, num_readers=8):
   """Creates the section of the graph which reads the input data.
   Args:
     reader: A class which parses the input data.
