@@ -144,7 +144,7 @@ def EqualSpaceFrames(model_input, num_frames, num_samples):
       tf.expand_dims(tf.range(batch_size), 1), [1, num_samples])
   index = tf.stack([batch_index, frame_index], 2)
   logging.info(frame_index)
-  return [tf.gather_nd(model_input, index),frame_index]
+  return tf.gather_nd(model_input, index)
 
 
 def EqualSpaceMeans(model_input, num_frames, num_samples):
