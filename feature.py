@@ -183,13 +183,13 @@ def inference(reader, train_dir, data_pattern, out_file_location, batch_size, to
         labels_val_tot = np.concatenate(labels_val_tot, axis=0)
         logging.info(video_id_batch_val_tot.shape)
         logging.info(labels_val_tot.shape)
-        with gfile.Open(out_file_location + 'id/' + 'dobf' + '_id' + str(file_num)+'.npy', "w+") as out_file:
+        with gfile.Open(out_file_location + 'id/' + 'dnn' + '_id' + str(file_num)+'.npy', "w+") as out_file:
           np.save(out_file, video_id_batch_val_tot)
-        with gfile.Open(out_file_location + 'feature/' + 'dobf' + '_feature1_' + str(file_num)+'.npy', "w+") as out_file:
+        with gfile.Open(out_file_location + 'feature/' + 'dnn' + '_feature1_' + str(file_num)+'.npy', "w+") as out_file:
           np.save(out_file, feature1_val_tot)
-        with gfile.Open(out_file_location + 'feature/' + 'dobf' + '_feature2_' + str(file_num)+'.npy', "w+") as out_file:
+        with gfile.Open(out_file_location + 'feature/' + 'dnn' + '_feature2_' + str(file_num)+'.npy', "w+") as out_file:
           np.save(out_file, feature2_val_tot)
-        with gfile.Open(out_file_location + 'label/' + 'dobf' + '_label' + str(file_num)+'.npy', "w+") as out_file:
+        with gfile.Open(out_file_location + 'label/' + 'dnn' + '_label' + str(file_num)+'.npy', "w+") as out_file:
           np.save(out_file, labels_val_tot)
         logging.info(file_num)
         file_num+=1
@@ -206,14 +206,16 @@ def inference(reader, train_dir, data_pattern, out_file_location, batch_size, to
         logging.info(feature1_val_tot.shape)
         logging.info(video_id_batch_val_tot.shape)
         logging.info(labels_val_tot.shape)
-        with gfile.Open(out_file_location + 'id/' + 'dobf' + '_id' + str(file_num)+'.npy', "w+") as out_file:
-          np.save(out_file, video_id_batch_val)
-        with gfile.Open(out_file_location + 'feature/' + 'dobf' + '_feature1_' + str(file_num)+'.npy', "w+") as out_file:
+        logging.info(feature1_val_tot)
+        logging.info(feature2_val_tot)
+        with gfile.Open(out_file_location + 'id/' + 'dnn' + '_id' + str(file_num)+'.npy', "w+") as out_file:
+          np.save(out_file, video_id_batch_val_tot)
+        with gfile.Open(out_file_location + 'feature/' + 'dnn' + '_feature1_' + str(file_num)+'.npy', "w+") as out_file:
           np.save(out_file, feature1_val_tot)
-        with gfile.Open(out_file_location + 'feature/' + 'dobf' + '_feature2_' + str(file_num)+'.npy', "w+") as out_file:
+        with gfile.Open(out_file_location + 'feature/' + 'dnn' + '_feature2_' + str(file_num)+'.npy', "w+") as out_file:
           np.save(out_file, feature2_val_tot)
-        with gfile.Open(out_file_location + 'label/' + 'dobf' + '_label' + str(file_num)+'.npy', "w+") as out_file:
-          np.save(out_file, labels_val)
+        with gfile.Open(out_file_location + 'label/' + 'dnn' + '_label' + str(file_num)+'.npy', "w+") as out_file:
+          np.save(out_file, labels_val_tot)
     finally:
         coord.request_stop()
 
